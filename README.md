@@ -73,27 +73,3 @@ Os dados são salvos automaticamente na pasta `dados/`:
 - `posts.ser` - Lista de posts
 
 **Nota:** O sistema utiliza UUIDs para identificação única, eliminando a necessidade de salvar contadores. Cada entidade recebe um identificador único universal (UUID) automaticamente.
-
-### Comentários (Comentario.java e PainelPost.java)
-- A classe `Comentario` já está estruturada
-- O método `comentarPost()` em `PainelPost.java` precisa ser implementado
-- Criar um diálogo similar ao `DialogNovoPost` para comentários
-- Integrar a exibição de comentários no `PainelPost`
-
-## Requisitos do Trabalho
-
-✅ Todos os requisitos foram atendidos:
-- Sistema orientado a objetos
-- Herança (Conteudo → Post, Comentario)
-- Classes abstratas (Conteudo)
-- Sobrescrita de método
-- Sobrecarga de método
-- Construtores
-- Encapsulamento (Usuario)
-- Atributo de classe (métodos estáticos em GeradorID e RedeSocial)
-- Polimorfismo
-- Manipulação de coleções (ArrayList)
-- Interface gráfica (Swing)
-- Tratamento de exceções
-- Manipulação de arquivos (serialização)
-
