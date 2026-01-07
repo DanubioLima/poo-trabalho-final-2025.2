@@ -2,55 +2,14 @@
 
 Sistema de rede social simples desenvolvido em Java com Swing, seguindo o padrão MVC.
 
-## Estrutura do Projeto
-
-```
-src/
-├── model/          # Classes do modelo (MVC)
-│   ├── Usuario.java
-│   ├── Post.java
-│   ├── Comentario.java
-│   ├── Conteudo.java (abstrata)
-│   └── RedeSocial.java
-├── view/           # Interfaces gráficas (MVC)
-│   ├── TelaLogin.java
-│   ├── TelaCadastro.java
-│   ├── TelaPrincipal.java
-│   ├── PainelPost.java
-│   └── DialogNovoPost.java
-├── controller/     # Controladores (MVC)
-│   ├── ControladorPrincipal.java
-│   ├── GerenciadorUsuarios.java
-│   ├── GerenciadorPosts.java
-│   └── GerenciadorPersistencia.java
-├── util/        # Utilitários
-│   ├── Excecoes.java
-│   └── GeradorID.java
-└── Main.java     # Classe principal
-```
-
 ## Funcionalidades Implementadas
 
 - ✅ Cadastro de usuários
 - ✅ Login e autenticação
-- ✅ Criação de posts
+- ✅ Criação de posts e comentários
 - ✅ Sistema de curtidas
 - ✅ Persistência de dados (serialização)
-- ✅ Interface gráfica completa
-
-## Conceitos OO Implementados
-
-1. **Herança**: `Conteudo` (abstrata) → `Post` e `Comentario`
-2. **Classes Abstratas**: `Conteudo`
-3. **Sobrescrita**: Métodos `toString()`, `equals()`, `obterResumo()`
-4. **Sobrecarga**: Construtores múltiplos em `Usuario` e `Post`
-5. **Encapsulamento**: Classe `Usuario` totalmente encapsulada
-6. **Atributo de Classe**: Métodos estáticos em `GeradorID` e `RedeSocial`
-7. **Polimorfismo**: Lista de `Conteudo` contendo `Post` e `Comentario`
-8. **Coleções**: `ArrayList<Usuario>`, `ArrayList<Post>`, `ArrayList<Comentario>`
-9. **Interface Gráfica**: Swing completo
-10. **Exceções**: Tratamento em cadastro, login e persistência
-11. **Manipulação de Arquivos**: Serialização para salvar/carregar dados
+- ✅ Interface gráfica
 
 ## Como Executar
 
