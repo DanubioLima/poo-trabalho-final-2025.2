@@ -38,7 +38,6 @@ public class Comentario extends Conteudo {
      */
     @Override
     public String obterResumo() {
-        // TODO: Implementar lógica para retornar resumo do comentário
         if (conteudo.length() > 50) {
             return conteudo.substring(0, 50) + "...";
         }
