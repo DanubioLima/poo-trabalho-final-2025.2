@@ -155,8 +155,11 @@ public class TelaCadastro extends JDialog {
             return;
         }
         
-        // TODO: exibir erro quando as senhas não coincidem
         if (!senha.equals(confirmarSenha)) {
+            JOptionPane.showMessageDialog(this, 
+                "As senhas não coincidem.", 
+                "Aviso", 
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
         

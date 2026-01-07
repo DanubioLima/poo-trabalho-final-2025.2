@@ -3,7 +3,9 @@ package view;
 import controller.GerenciadorPosts;
 import controller.ControladorPrincipal;
 import model.Post;
+import model.Comentario;
 import model.Usuario;
+import util.Excecoes;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,7 @@ public class PainelPost extends JPanel {
     private JLabel labelCurtidas;
     private JButton botaoCurtir;
     private JButton botaoComentar;
+    private JPanel painelComentarios;
     private Runnable callbackAtualizacao;
     
     public PainelPost(Post post, Usuario usuarioLogado, Runnable callbackAtualizacao) {
@@ -62,6 +65,10 @@ public class PainelPost extends JPanel {
         
         botaoCurtir = new JButton();
         botaoComentar = new JButton("Comentar");
+        
+        painelComentarios = new JPanel();
+        painelComentarios.setLayout(new BoxLayout(painelComentarios, BoxLayout.Y_AXIS));
+        painelComentarios.setBackground(Color.WHITE);
     }
     
     private void adicionarComponentes() {
@@ -75,6 +82,13 @@ public class PainelPost extends JPanel {
         painelConteudo.add(labelConteudo, BorderLayout.NORTH);
         painelConteudo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         
+        // Painel de comentários com scroll
+        JScrollPane scrollComentarios = new JScrollPane(painelComentarios);
+        scrollComentarios.setBorder(BorderFactory.createTitledBorder("Comentários"));
+        scrollComentarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollComentarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollComentarios.setPreferredSize(new Dimension(0, 150));
+        
         // Painel inferior (curtidas e botões)
         JPanel painelInferior = new JPanel(new BorderLayout());
         painelInferior.add(labelCurtidas, BorderLayout.WEST);
@@ -84,8 +98,13 @@ public class PainelPost extends JPanel {
         painelBotoes.add(botaoComentar);
         painelInferior.add(painelBotoes, BorderLayout.EAST);
         
+        // Painel central combinado (conteúdo + comentários)
+        JPanel painelCentral = new JPanel(new BorderLayout());
+        painelCentral.add(painelConteudo, BorderLayout.NORTH);
+        painelCentral.add(scrollComentarios, BorderLayout.CENTER);
+        
         add(painelSuperior, BorderLayout.NORTH);
-        add(painelConteudo, BorderLayout.CENTER);
+        add(painelCentral, BorderLayout.CENTER);
         add(painelInferior, BorderLayout.SOUTH);
     }
     
@@ -112,7 +131,8 @@ public class PainelPost extends JPanel {
                              "</body></html>");
         
         int numCurtidas = post.getNumeroCurtidas();
-        labelCurtidas.setText(numCurtidas + " curtida(s)");
+        int numComentarios = post.getNumeroComentarios();
+        labelCurtidas.setText(numCurtidas + " curtida(s) | " + numComentarios + " comentário(s)");
         
         // Atualizar botão de curtir
         if (post.foiCurtidoPor(usuarioLogado)) {
@@ -122,6 +142,65 @@ public class PainelPost extends JPanel {
             botaoCurtir.setText("Curtir");
             botaoCurtir.setForeground(Color.BLACK);
         }
+        
+        // Atualizar painel de comentários
+        atualizarComentarios();
+    }
+    
+    private void atualizarComentarios() {
+        painelComentarios.removeAll();
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        
+        for (Comentario comentario : post.getComentarios()) {
+            // Painel para cada comentário
+            JPanel painelComentario = new JPanel(new BorderLayout());
+            painelComentario.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+            ));
+            painelComentario.setBackground(new Color(245, 245, 245));
+            painelComentario.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+            
+            // Label do autor (negrito)
+            JLabel labelAutorComentario = new JLabel(comentario.getAutor().getNome());
+            labelAutorComentario.setFont(new Font("Arial", Font.BOLD, 11));
+            
+            // Label da data
+            JLabel labelDataComentario = new JLabel(comentario.getDataCriacao().format(formatter));
+            labelDataComentario.setFont(new Font("Arial", Font.ITALIC, 9));
+            labelDataComentario.setForeground(Color.GRAY);
+            
+            // Painel superior do comentário (autor e data)
+            JPanel painelSuperiorComentario = new JPanel(new BorderLayout());
+            painelSuperiorComentario.setOpaque(false);
+            painelSuperiorComentario.add(labelAutorComentario, BorderLayout.WEST);
+            painelSuperiorComentario.add(labelDataComentario, BorderLayout.EAST);
+            
+            // Label do conteúdo do comentário
+            JLabel labelConteudoComentario = new JLabel("<html><body style='width: 350px'>" + 
+                                                        comentario.getConteudo().replace("\n", "<br>") + 
+                                                        "</body></html>");
+            labelConteudoComentario.setFont(new Font("Arial", Font.PLAIN, 11));
+            
+            painelComentario.add(painelSuperiorComentario, BorderLayout.NORTH);
+            painelComentario.add(labelConteudoComentario, BorderLayout.CENTER);
+            
+            painelComentarios.add(painelComentario);
+            painelComentarios.add(Box.createVerticalStrut(5));
+        }
+        
+        // Se não houver comentários, mostrar mensagem
+        if (post.getComentarios().isEmpty()) {
+            JLabel labelSemComentarios = new JLabel("Nenhum comentário ainda.");
+            labelSemComentarios.setFont(new Font("Arial", Font.ITALIC, 10));
+            labelSemComentarios.setForeground(Color.GRAY);
+            labelSemComentarios.setAlignmentX(Component.LEFT_ALIGNMENT);
+            painelComentarios.add(labelSemComentarios);
+        }
+        
+        painelComentarios.revalidate();
+        painelComentarios.repaint();
     }
     
     private void curtirPost() {
@@ -140,11 +219,84 @@ public class PainelPost extends JPanel {
     }
     
     private void comentarPost() {
-        // TODO: Implementar diálogo de comentário
-        JOptionPane.showMessageDialog(this, 
-            "Funcionalidade de comentários será implementada", 
-            "Em Desenvolvimento", 
-            JOptionPane.INFORMATION_MESSAGE);
+        // Criar diálogo para comentário
+        JDialog dialogComentario = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), 
+                                                "Novo Comentário", true);
+        dialogComentario.setSize(500, 250);
+        dialogComentario.setLocationRelativeTo(this);
+        dialogComentario.setLayout(new BorderLayout());
+        
+        // Área de texto para o comentário
+        JTextArea areaComentario = new JTextArea(8, 40);
+        areaComentario.setLineWrap(true);
+        areaComentario.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(areaComentario);
+        
+        // Painel do conteúdo
+        JPanel painelConteudo = new JPanel(new BorderLayout());
+        painelConteudo.setBorder(BorderFactory.createTitledBorder("Escreva seu comentário:"));
+        painelConteudo.add(scrollPane, BorderLayout.CENTER);
+        
+        // Botões
+        JButton botaoComentar = new JButton("Comentar");
+        JButton botaoCancelar = new JButton("Cancelar");
+        
+        JPanel painelBotoes = new JPanel(new FlowLayout());
+        painelBotoes.add(botaoComentar);
+        painelBotoes.add(botaoCancelar);
+        
+        // Adicionar componentes ao diálogo
+        dialogComentario.add(painelConteudo, BorderLayout.CENTER);
+        dialogComentario.add(painelBotoes, BorderLayout.SOUTH);
+        
+        // Evento do botão comentar
+        botaoComentar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String conteudo = areaComentario.getText().trim();
+                
+                if (conteudo.isEmpty()) {
+                    JOptionPane.showMessageDialog(dialogComentario, 
+                        "O comentário não pode estar vazio.", 
+                        "Aviso", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                try {
+                    GerenciadorPosts.comentarPost(post, conteudo, usuarioLogado);
+                    ControladorPrincipal.salvarDados();
+                    JOptionPane.showMessageDialog(dialogComentario, 
+                        "Comentário adicionado com sucesso!", 
+                        "Sucesso", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    
+                    dialogComentario.dispose();
+                    
+                    // Atualizar visualização e callback
+                    atualizarVisualizacao();
+                    if (callbackAtualizacao != null) {
+                        callbackAtualizacao.run();
+                    }
+                } catch (Excecoes.DadosInvalidosException ex) {
+                    JOptionPane.showMessageDialog(dialogComentario, 
+                        ex.getMessage(), 
+                        "Erro", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+        // Evento do botão cancelar
+        botaoCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialogComentario.dispose();
+            }
+        });
+        
+        // Mostrar diálogo
+        dialogComentario.setVisible(true);
     }
 }
 

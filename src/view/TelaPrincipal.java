@@ -124,7 +124,15 @@ public class TelaPrincipal extends JFrame {
             labelVazio.setBorder(BorderFactory.createEmptyBorder(50, 10, 50, 10));
             painelFeed.add(labelVazio);
         } else {
-            // TODO: Implementar exibição completa do feed
+            for (Post post : posts) {
+                PainelPost painelPost = new PainelPost(post, usuarioLogado, new Runnable() {
+                    @Override
+                    public void run() {
+                        atualizarFeed();
+                    }
+                });
+                painelFeed.add(painelPost);
+            }
         }
         
         // Atualizar interface

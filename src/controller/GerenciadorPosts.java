@@ -2,6 +2,7 @@ package controller;
 
 import model.Post;
 import model.Usuario;
+import model.Comentario;
 import model.RedeSocial;
 import util.Excecoes;
 
@@ -63,6 +64,39 @@ public class GerenciadorPosts {
             return false;
         }
         return post.descurtir(usuario);
+    }
+    
+    /**
+     * Adiciona um comentário a um post.
+     * @param post Post a ser comentado
+     * @param conteudo Conteúdo do comentário
+     * @param autor Usuário autor do comentário
+     * @return Comentário criado
+     * @throws Excecoes.DadosInvalidosException Se os dados forem inválidos
+     */
+    public static Comentario comentarPost(Post post, String conteudo, Usuario autor) 
+            throws Excecoes.DadosInvalidosException {
+        
+        if (post == null) {
+            throw new Excecoes.DadosInvalidosException("Post não pode ser nulo.");
+        }
+        
+        if (autor == null) {
+            throw new Excecoes.DadosInvalidosException("Autor não pode ser nulo.");
+        }
+        
+        if (conteudo == null || conteudo.trim().isEmpty()) {
+            throw new Excecoes.DadosInvalidosException("Comentário não pode estar vazio.");
+        }
+        
+        if (conteudo.length() > 300) {
+            throw new Excecoes.DadosInvalidosException("Comentário não pode ter mais de 300 caracteres.");
+        }
+        
+        Comentario novoComentario = new Comentario(conteudo.trim(), autor);
+        post.adicionarComentario(novoComentario);
+        
+        return novoComentario;
     }
     
     /**
