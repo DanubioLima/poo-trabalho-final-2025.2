@@ -17,6 +17,7 @@ public class TelaPrincipal extends JFrame {
     private JPanel painelFeed;
     private JButton botaoNovoPost;
     private JButton botaoAtualizar;
+    private JButton botaoRelatorios;
     private JButton botaoLogout;
     private JLabel labelBemVindo;
     
@@ -43,6 +44,7 @@ public class TelaPrincipal extends JFrame {
         
         botaoNovoPost = new JButton("Novo Post");
         botaoAtualizar = new JButton("Atualizar Feed");
+        botaoRelatorios = new JButton("Relatórios");
         botaoLogout = new JButton("Sair");
         
         painelFeed = new JPanel();
@@ -60,6 +62,7 @@ public class TelaPrincipal extends JFrame {
         JPanel painelBotoes = new JPanel(new FlowLayout());
         painelBotoes.add(botaoNovoPost);
         painelBotoes.add(botaoAtualizar);
+        painelBotoes.add(botaoRelatorios);
         painelBotoes.add(botaoLogout);
         painelSuperior.add(painelBotoes, BorderLayout.EAST);
         
@@ -88,6 +91,13 @@ public class TelaPrincipal extends JFrame {
             }
         });
         
+        botaoRelatorios.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exibirRelatorios();
+            }
+        });
+        
         botaoLogout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,6 +114,11 @@ public class TelaPrincipal extends JFrame {
             }
         });
         dialog.setVisible(true);
+    }
+    
+    private void exibirRelatorios() {
+        TelaRelatorios telaRelatorios = new TelaRelatorios(usuarioLogado);
+        telaRelatorios.setVisible(true);
     }
     
     /**

@@ -106,5 +106,42 @@ public class GerenciadorPosts {
     public static java.util.List<Post> obterFeed() {
         return RedeSocial.obterTodosPosts();
     }
+    
+    /**
+     * Obtém todos os posts de um usuário específico.
+     * @param usuario Usuário cujos posts serão retornados
+     * @return Lista de posts do usuário
+     */
+    public static java.util.List<Post> obterPostsDoUsuario(Usuario usuario) {
+        return RedeSocial.obterPostsDoUsuario(usuario);
+    }
+    
+    /**
+     * Calcula o total de curtidas de todos os posts de um usuário.
+     * @param usuario Usuário cujos posts serão analisados
+     * @return Total de curtidas
+     */
+    public static int calcularTotalCurtidas(Usuario usuario) {
+        java.util.List<Post> postsDoUsuario = obterPostsDoUsuario(usuario);
+        int total = 0;
+        for (Post post : postsDoUsuario) {
+            total += post.getNumeroCurtidas();
+        }
+        return total;
+    }
+    
+    /**
+     * Calcula o total de comentários de todos os posts de um usuário.
+     * @param usuario Usuário cujos posts serão analisados
+     * @return Total de comentários
+     */
+    public static int calcularTotalComentarios(Usuario usuario) {
+        java.util.List<Post> postsDoUsuario = obterPostsDoUsuario(usuario);
+        int total = 0;
+        for (Post post : postsDoUsuario) {
+            total += post.getNumeroComentarios();
+        }
+        return total;
+    }
 }
 

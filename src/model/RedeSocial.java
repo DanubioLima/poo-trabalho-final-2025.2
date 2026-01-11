@@ -74,6 +74,21 @@ public class RedeSocial {
     }
     
     /**
+     * Obtém todos os posts de um usuário específico.
+     * @param usuario Usuário cujos posts serão retornados
+     * @return Lista de posts do usuário
+     */
+    public static List<Post> obterPostsDoUsuario(Usuario usuario) {
+        List<Post> postsDoUsuario = new ArrayList<>();
+        for (Post post : posts) {
+            if (post.getAutor().equals(usuario)) {
+                postsDoUsuario.add(post);
+            }
+        }
+        return postsDoUsuario;
+    }
+    
+    /**
      * Obtém todos os usuários cadastrados.
      * @return Lista de usuários
      */
